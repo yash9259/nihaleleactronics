@@ -100,10 +100,10 @@ export const Layout: React.FC<LayoutPropsWithFirm> = ({
           isDark={isDarkMode}
         />
         <NavItem 
-          icon={<BarChart3 size={20} />} 
-          label="Stats" 
-          active={activeTab === Tab.REPORT} 
-          onClick={() => onTabChange(Tab.REPORT)}
+          icon={<Package size={20} />} 
+          label="Stock" 
+          active={activeTab === Tab.INVENTORY} 
+          onClick={() => onTabChange(Tab.INVENTORY)}
           isDark={isDarkMode}
         />
       </nav>
