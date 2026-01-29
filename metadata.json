@@ -1,0 +1,8 @@
+
+{
+  "name": "Smart Admin Dashboard",
+  "description": "A high-performance, mobile-first admin dashboard featuring real-time stock monitoring, task management, and AI-driven insights.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
