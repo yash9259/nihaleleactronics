@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
-import NihalLogo from '../dist/assets/nihal logo .png';
-import YashLogo from '../dist/assets/yash logo.png';
+import NihalLogo from '../dist/assets/nihallogo.png';
+import YashLogo from '../dist/assets/yashlogo.png';
 import { motion } from 'framer-motion';
 import { Sun, Moon, LayoutGrid, ClipboardList, Scan, Package, BarChart3, QrCode, Wrench } from 'lucide-react';
 import ScanOrNewTagModal from './ScanOrNewTagModal';
