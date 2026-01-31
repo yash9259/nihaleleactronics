@@ -1,7 +1,6 @@
 
 import React, { useState } from 'react';
-import NihalLogo from '../dist/assets/nihallogo.png';
-import YashLogo from '../dist/assets/yashlogo.png';
+
 import { motion } from 'framer-motion';
 import { Sun, Moon, LayoutGrid, ClipboardList, Scan, Package, BarChart3, QrCode, Wrench } from 'lucide-react';
 import ScanOrNewTagModal from './ScanOrNewTagModal';
@@ -43,9 +42,9 @@ export const Layout: React.FC<LayoutPropsWithFirm> = ({
       <header className="px-6 pt-8 pb-4 flex justify-between items-start z-10">
         <div className="flex items-center gap-3">
           {firmName === 'Nihal Electronics' ? (
-            <img src={NihalLogo} alt="Nihal Logo" className="w-10 h-10 rounded-xl bg-white object-contain p-1" />
+            <img src="/nihallogo.png" alt="Nihal Logo" className="w-10 h-10 rounded-xl bg-white object-contain p-1" />
           ) : firmName === 'Yash Electronics' ? (
-            <img src={YashLogo} alt="Yash Logo" className="w-10 h-10 rounded-xl bg-white object-contain p-1" />
+            <img src="/yashlogo.png" alt="Yash Logo" className="w-10 h-10 rounded-xl bg-white object-contain p-1" />
           ) : (
             <div className="p-2 bg-blue-600 rounded-xl text-white">
               <Wrench size={20} />
