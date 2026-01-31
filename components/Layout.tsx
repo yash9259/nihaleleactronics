@@ -1,9 +1,12 @@
 
 import React, { useState } from 'react';
+import NihalLogo from '../dist/assets/nihal logo .png';
+import YashLogo from '../dist/assets/yash logo.png';
 import { motion } from 'framer-motion';
 import { Sun, Moon, LayoutGrid, ClipboardList, Scan, Package, BarChart3, QrCode, Wrench } from 'lucide-react';
 import ScanOrNewTagModal from './ScanOrNewTagModal';
 import { Tab } from '../types';
+
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -11,6 +14,7 @@ interface LayoutProps {
   onTabChange: (tab: Tab) => void;
   isDarkMode: boolean;
   toggleDarkMode: () => void;
+  onLogout?: () => void;
 }
 
 interface LayoutPropsWithFirm extends LayoutProps {
@@ -23,7 +27,8 @@ export const Layout: React.FC<LayoutPropsWithFirm> = ({
   onTabChange, 
   isDarkMode, 
   toggleDarkMode, 
-  firmName
+  firmName,
+  onLogout
 }) => {
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -37,9 +42,15 @@ export const Layout: React.FC<LayoutPropsWithFirm> = ({
       {/* Header */}
       <header className="px-6 pt-8 pb-4 flex justify-between items-start z-10">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-blue-600 rounded-xl text-white">
-            <Wrench size={20} />
-          </div>
+          {firmName === 'Nihal Electronics' ? (
+            <img src={NihalLogo} alt="Nihal Logo" className="w-10 h-10 rounded-xl bg-white object-contain p-1" />
+          ) : firmName === 'Yash Electronics' ? (
+            <img src={YashLogo} alt="Yash Logo" className="w-10 h-10 rounded-xl bg-white object-contain p-1" />
+          ) : (
+            <div className="p-2 bg-blue-600 rounded-xl text-white">
+              <Wrench size={20} />
+            </div>
+          )}
           <div>
             <h1 className="text-xl font-bold tracking-tight">{firmName || 'Repair Hub'}</h1>
             <p className={`text-[10px] font-bold uppercase tracking-widest ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}> 
@@ -47,12 +58,24 @@ export const Layout: React.FC<LayoutPropsWithFirm> = ({
             </p>
           </div>
         </div>
-        <button 
-          onClick={toggleDarkMode}
-          className={`p-2 rounded-xl transition-all active:scale-90 ${isDarkMode ? 'bg-slate-800 text-yellow-400 hover:bg-slate-700' : 'bg-white text-slate-900 shadow-sm hover:bg-slate-100'}`}
-        >
-          {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
-        </button>
+        <div className="flex flex-col gap-2 items-end">
+          <button 
+            onClick={toggleDarkMode}
+            className={`p-2 rounded-xl transition-all active:scale-90 ${isDarkMode ? 'bg-slate-800 text-yellow-400 hover:bg-slate-700' : 'bg-white text-slate-900 shadow-sm hover:bg-slate-100'}`}
+            title="Toggle dark mode"
+          >
+            {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+          </button>
+          {onLogout && (
+            <button
+              onClick={onLogout}
+              className={`p-2 rounded-xl transition-all active:scale-90 mt-1 ${isDarkMode ? 'bg-red-700 text-white hover:bg-red-600' : 'bg-red-100 text-red-700 hover:bg-red-200'} text-xs font-semibold`}
+              title="Logout"
+            >
+              Logout
+            </button>
+          )}
+        </div>
       </header>
 
       {/* Content Area */}
