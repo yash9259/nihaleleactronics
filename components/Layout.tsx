@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 
 import { motion } from 'framer-motion';
-import { Sun, Moon, LayoutGrid, ClipboardList, Scan, Package, BarChart3, QrCode, Wrench } from 'lucide-react';
+import { Sun, Moon, LayoutGrid, ClipboardList, Scan, Package, Wrench, Menu, Search } from 'lucide-react';
 import ScanOrNewTagModal from './ScanOrNewTagModal';
 import { Tab } from '../types';
 
@@ -13,7 +13,7 @@ interface LayoutProps {
   onTabChange: (tab: Tab) => void;
   isDarkMode: boolean;
   toggleDarkMode: () => void;
-  import { Sun, Moon, LayoutGrid, ClipboardList, Scan, Package, Wrench, Menu, Search } from 'lucide-react';
+  onLogout?: () => void;
 }
 
 interface LayoutPropsWithFirm extends LayoutProps {
@@ -27,24 +27,26 @@ export const Layout: React.FC<LayoutPropsWithFirm> = ({
   isDarkMode, 
   toggleDarkMode, 
   firmName,
-    const isDashboard = activeTab === Tab.DASHBOARD;
-    const isLightMode = isDashboard ? true : !isDarkMode;
-    const containerClass = isDashboard
-      ? 'bg-white text-black'
-      : isDarkMode
-        ? 'bg-slate-950 text-white'
-        : 'bg-slate-50 text-slate-900';
   onLogout
 }) => {
+  const isDashboard = activeTab === Tab.DASHBOARD;
+  const isLightMode = isDashboard ? true : !isDarkMode;
+  const containerClass = isDashboard
+    ? 'bg-white text-black'
+    : isDarkMode
+      ? 'bg-slate-950 text-white'
+      : 'bg-slate-50 text-slate-900';
+
   const [modalOpen, setModalOpen] = useState(false);
 
   const handleModalSelect = (tab: 'scan' | 'new') => {
     if (tab === 'scan') onTabChange(Tab.SEARCH);
     else if (tab === 'new') onTabChange(Tab.QR_GENERATE);
-      <div className={`flex flex-col h-screen max-w-md mx-auto relative overflow-hidden transition-colors duration-300 ${containerClass}`}>
+    setModalOpen(false);
+  };
 
   return (
-    <div className={`flex flex-col h-screen max-w-md mx-auto relative overflow-hidden transition-colors duration-300 ${isDarkMode ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'}`}>
+    <div className={`flex flex-col h-screen max-w-md mx-auto relative overflow-hidden transition-colors duration-300 ${containerClass}`}>
       {/* Header */}
       {isDashboard ? (
         <header className="px-4 pt-6 pb-2 flex items-center justify-between z-10">
