@@ -1,138 +1,95 @@
 
 import React from 'react';
-import { Package, AlertCircle, CheckCircle2, Clock, Plus, QrCode, ClipboardList, Wrench } from 'lucide-react';
-import { StatCard } from './StatCard';
-import { StatData, Activity, RepairRecord } from '../types';
+import { RepairRecord } from '../types';
 
 interface DashboardViewProps {
   onNavigateToQR: () => void;
   onNavigateToInventory: () => void;
   repairs: RepairRecord[];
+  userName?: string;
 }
 
-export const DashboardView: React.FC<DashboardViewProps> = ({ onNavigateToQR, onNavigateToInventory, repairs }) => {
-  const activeJobs = repairs.filter(r => r.status !== 'completed').length;
-  const pendingQuotes = repairs.filter(r => r.status === 'quoted').length;
+export const DashboardView: React.FC<DashboardViewProps> = ({ onNavigateToQR, onNavigateToInventory, repairs, userName }) => {
+  const isSameDay = (a: Date, b: Date) =>
+    a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
 
-  // Real revenue calculation based on completed jobs or estimated value of all jobs
-  const totalRevenue = repairs.reduce((acc, r) => acc + (r.estimatedCost || 0), 0);
-  const completedRevenue = repairs
-    .filter(r => r.status === 'completed')
-    .reduce((acc, r) => acc + (r.estimatedCost || 0), 0);
+  const today = new Date();
+  const completedToday = repairs.filter(r => {
+    const date = r.updatedAt ? new Date(r.updatedAt) : new Date(r.dateAdded);
+    return r.status === 'completed' && isSameDay(date, today);
+  }).length;
 
-  const stats: StatData[] = [
-    {
-      label: "Active Jobs",
-      value: activeJobs.toString(),
-      change: "+2",
-      trend: 'up',
-      icon: <Wrench />,
-      color: "text-blue-500"
-    },
-    {
-      label: "Open Quotes",
-      value: pendingQuotes.toString(),
-      change: "+1",
-      trend: 'up',
-      icon: <AlertCircle />,
-      color: "text-orange-500"
-    },
-    {
-      label: "Total Repaired",
-      value: repairs.filter(r => r.status === 'completed').length.toString(),
-      change: "+12.5%",
-      trend: 'up',
-      icon: <CheckCircle2 />,
-      color: "text-emerald-500"
-    },
-    {
-      label: "Workshop Load",
-      value: "65%",
-      change: "-5%",
-      trend: 'down',
-      icon: <Clock />,
-      color: "text-purple-500"
-    }
-  ];
+  const notReviewed = repairs.filter(r => r.status === 'quoted').length;
+  const estimateApproved = repairs.filter(r => r.status === 'approved').length;
+  const onWorkbench = repairs.filter(r => r.status === 'working').length;
+  const readyToDeliver = repairs.filter(r => r.status === 'completed').length;
 
   return (
-    <div className="animate-in fade-in duration-500 pb-12">
-      {/* Welcome Banner */}
-      <div className={`mt-4 p-6 rounded-[2.5rem] shadow-xl mb-8 
-        ${typeof window !== 'undefined' && document.body.classList.contains('bg-slate-50')
-          ? 'bg-gradient-to-br from-blue-100 to-indigo-100 text-slate-900 shadow-blue-200/20'
-          : 'bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-blue-500/20'}`}
-      >
-        <h2 className="text-xl font-bold">Welcome Back, Chief!</h2>
-        <p className="text-xs opacity-80 mt-1">You have {activeJobs} jobs currently on the workbench.</p>
-        <div className="mt-6 flex gap-4">
-          <div className={`${typeof window !== 'undefined' && document.body.classList.contains('bg-slate-50') ? 'bg-blue-100 text-blue-900' : 'bg-white/20 text-white'} px-4 py-2 rounded-2xl flex-1`}>
-            <p className="text-[10px] font-bold uppercase opacity-60">Estimated Revenue</p>
-            <p className="text-sm font-bold">${totalRevenue.toLocaleString()}</p>
+    <div className="animate-in fade-in duration-500 pb-20">
+      <div className="mt-2 p-5 border border-black/20 rounded-[2.2rem] bg-white text-black shadow-sm">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h2 className="text-2xl font-semibold leading-tight">Welcome,</h2>
+            <h3 className="text-2xl font-semibold leading-tight">{userName || 'User'}</h3>
+            <p className="text-xs mt-2">{completedToday} job complated today</p>
           </div>
-          <div className={`${typeof window !== 'undefined' && document.body.classList.contains('bg-slate-50') ? 'bg-blue-100 text-blue-900' : 'bg-white/20 text-white'} px-4 py-2 rounded-2xl flex-1`}>
-            <p className="text-[10px] font-bold uppercase opacity-60">Completed</p>
-            <p className="text-sm font-bold">${completedRevenue.toLocaleString()}</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Stats Grid */}
-      <div className="grid grid-cols-2 gap-4 mt-4">
-        {stats.map((stat, i) => (
-          <StatCard key={i} {...stat} />
-        ))}
-      </div>
-
-      {/* Quick Actions */}
-      <div className="mt-8">
-        <h2 className="text-lg font-bold mb-4 px-1">Shop Quick Actions</h2>
-        <div className="grid grid-cols-2 gap-4">
           <button
-            onClick={() => onNavigateToQR()}
-            className="flex flex-col items-center justify-center gap-3 p-6 bg-purple-600 rounded-[2rem] text-white shadow-xl shadow-purple-600/20 active:scale-95 transition-transform"
+            onClick={onNavigateToQR}
+            className="w-24 h-24 rounded-[1.8rem] border border-black/30 flex items-center justify-center text-sm leading-tight text-center active:scale-95 transition-transform"
           >
-            <QrCode size={24} />
-            <span className="font-bold text-sm">Issue Tag</span>
-          </button>
-          <button
-            onClick={onNavigateToInventory}
-            className="flex flex-col items-center justify-center gap-3 p-6 bg-slate-900 rounded-[2rem] text-white border border-slate-800 active:scale-95 transition-transform"
-          >
-            <ClipboardList size={24} className="text-blue-500" />
-            <span className="font-bold text-sm">Inventory</span>
+            payment
+            <br />
+            qr
           </button>
         </div>
       </div>
 
-      {/* Recent Jobs */}
-      <div className="mt-8 mb-8">
-        <h2 className="text-lg font-bold mb-4 px-1">Recent Activity</h2>
-        <div className="bg-slate-900/40 rounded-[2rem] overflow-hidden border border-slate-800/50">
-          {repairs.slice(0, 4).map((job, idx) => (
-            <div
-              key={job.id}
-              className={`p-5 flex items-center justify-between group cursor-pointer hover:bg-slate-800/30 transition-colors ${idx !== repairs.length - 1 ? 'border-b border-slate-800/40' : ''}`}
-            >
-              <div className="flex items-center gap-4">
-                <div className={`w-2 h-2 rounded-full ${job.status === 'completed' ? 'bg-emerald-500' : 'bg-blue-500'} shadow-[0_0_8px] shadow-current`} />
-                <div>
-                  <h4 className="font-bold text-sm">{job.product}</h4>
-                  <p className="text-xs text-slate-500">{job.customerName}</p>
-                </div>
-              </div>
-              <div className="flex flex-col items-end">
-                <span className="text-[10px] text-slate-500 font-mono">{job.id}</span>
-                {job.estimatedCost !== undefined && (
-                  <span className="text-[10px] text-emerald-500 font-bold">${job.estimatedCost.toFixed(2)}</span>
-                )}
-              </div>
-            </div>
-          ))}
-          {repairs.length === 0 && (
-            <div className="p-10 text-center text-slate-600 text-xs font-bold uppercase tracking-widest">No recent jobs</div>
-          )}
+      <div className="grid grid-cols-2 gap-4 mt-6">
+        <div className="border border-black/30 rounded-2xl p-4 text-center">
+          <p className="text-lg leading-tight">not</p>
+          <p className="text-lg leading-tight">reviewed</p>
+          <p className="text-[11px] mt-2 text-black/70">{notReviewed} jobs</p>
         </div>
+        <div className="border border-black/30 rounded-2xl p-4 text-center">
+          <p className="text-lg leading-tight">estimate</p>
+          <p className="text-lg leading-tight">approved</p>
+          <p className="text-[11px] mt-2 text-black/70">{estimateApproved} jobs</p>
+        </div>
+        <div className="border border-black/30 rounded-2xl p-4 text-center">
+          <p className="text-lg leading-tight">on</p>
+          <p className="text-lg leading-tight">workbench</p>
+          <p className="text-[11px] mt-2 text-black/70">{onWorkbench} jobs</p>
+        </div>
+        <div className="border border-black/30 rounded-2xl p-4 text-center">
+          <p className="text-lg leading-tight">ready to</p>
+          <p className="text-lg leading-tight">deliver</p>
+          <p className="text-[11px] mt-2 text-black/70">{readyToDeliver} jobs</p>
+        </div>
+      </div>
+
+      <div className="mt-6 px-1">
+        <p className="text-lg">resent activities</p>
+        {repairs.length > 0 && (
+          <div className="mt-3 space-y-2">
+            {repairs.slice(0, 3).map((job) => (
+              <div key={job.id} className="flex justify-between text-xs text-black/70">
+                <span>{job.product}</span>
+                <span>{job.customerName}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="mt-10 flex items-center justify-center">
+        <button
+          onClick={onNavigateToQR}
+          className="w-24 h-24 rounded-full border border-black/30 flex items-center justify-center text-sm text-center active:scale-95 transition-transform"
+        >
+          qr
+          <br />
+          scanner
+        </button>
       </div>
     </div>
   );

@@ -201,6 +201,7 @@ const App: React.FC = () => {
             onNavigateToQR={() => setActiveTab(Tab.QR_GENERATE)}
             onNavigateToInventory={() => setActiveTab(Tab.INVENTORY)}
             repairs={repairs}
+            userName={getUserName()}
           />
         );
       case Tab.WORK:
@@ -219,6 +220,7 @@ const App: React.FC = () => {
             onNavigateToQR={() => setActiveTab(Tab.QR_GENERATE)}
             onNavigateToInventory={() => setActiveTab(Tab.INVENTORY)}
             repairs={repairs}
+            userName={getUserName()}
           />
         );
     }
@@ -228,6 +230,14 @@ const App: React.FC = () => {
     if (currentFirmId === 'Nihalelectronics') return 'Nihal Electronics';
     if (currentFirmId === 'Yashelectronics') return 'Yash Electronics';
     return 'Repair Hub';
+  };
+
+  const getUserName = () => {
+    if (typeof window !== 'undefined') {
+      const stored = window.localStorage.getItem('userName');
+      if (stored && stored.trim()) return stored.trim();
+    }
+    return getFirmName();
   };
 
   return (

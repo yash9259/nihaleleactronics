@@ -13,7 +13,7 @@ interface LayoutProps {
   onTabChange: (tab: Tab) => void;
   isDarkMode: boolean;
   toggleDarkMode: () => void;
-  onLogout?: () => void;
+  import { Sun, Moon, LayoutGrid, ClipboardList, Scan, Package, Wrench, Menu, Search } from 'lucide-react';
 }
 
 interface LayoutPropsWithFirm extends LayoutProps {
@@ -27,6 +27,13 @@ export const Layout: React.FC<LayoutPropsWithFirm> = ({
   isDarkMode, 
   toggleDarkMode, 
   firmName,
+    const isDashboard = activeTab === Tab.DASHBOARD;
+    const isLightMode = isDashboard ? true : !isDarkMode;
+    const containerClass = isDashboard
+      ? 'bg-white text-black'
+      : isDarkMode
+        ? 'bg-slate-950 text-white'
+        : 'bg-slate-50 text-slate-900';
   onLogout
 }) => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -34,48 +41,60 @@ export const Layout: React.FC<LayoutPropsWithFirm> = ({
   const handleModalSelect = (tab: 'scan' | 'new') => {
     if (tab === 'scan') onTabChange(Tab.SEARCH);
     else if (tab === 'new') onTabChange(Tab.QR_GENERATE);
-  };
+      <div className={`flex flex-col h-screen max-w-md mx-auto relative overflow-hidden transition-colors duration-300 ${containerClass}`}>
 
   return (
     <div className={`flex flex-col h-screen max-w-md mx-auto relative overflow-hidden transition-colors duration-300 ${isDarkMode ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'}`}>
       {/* Header */}
-      <header className="px-6 pt-8 pb-4 flex justify-between items-start z-10">
-        <div className="flex items-center gap-3">
-          {firmName === 'Nihal Electronics' ? (
-            <img src="/nihallogo.png" alt="Nihal Logo" className="w-10 h-10 rounded-xl bg-white object-contain p-1" />
-          ) : firmName === 'Yash Electronics' ? (
-            <img src="/yashlogo.png" alt="Yash Logo" className="w-10 h-10 rounded-xl bg-white object-contain p-1" />
-          ) : (
-            <div className="p-2 bg-blue-600 rounded-xl text-white">
-              <Wrench size={20} />
-            </div>
-          )}
-          <div>
-            <h1 className="text-xl font-bold tracking-tight">{firmName || 'Repair Hub'}</h1>
-            <p className={`text-[10px] font-bold uppercase tracking-widest ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}> 
-              Shop Management
-            </p>
-          </div>
-        </div>
-        <div className="flex flex-col gap-2 items-end">
-          <button 
-            onClick={toggleDarkMode}
-            className={`p-2 rounded-xl transition-all active:scale-90 ${isDarkMode ? 'bg-slate-800 text-yellow-400 hover:bg-slate-700' : 'bg-white text-slate-900 shadow-sm hover:bg-slate-100'}`}
-            title="Toggle dark mode"
-          >
-            {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+      {isDashboard ? (
+        <header className="px-4 pt-6 pb-2 flex items-center justify-between z-10">
+          <button className="p-2 rounded-md border border-black/20" title="Menu">
+            <Menu size={20} />
           </button>
-          {onLogout && (
-            <button
-              onClick={onLogout}
-              className={`p-2 rounded-xl transition-all active:scale-90 mt-1 ${isDarkMode ? 'bg-red-700 text-white hover:bg-red-600' : 'bg-red-100 text-red-700 hover:bg-red-200'} text-xs font-semibold`}
-              title="Logout"
+          <h1 className="text-lg font-semibold">{firmName || 'Repair Hub'}</h1>
+          <button className="p-2 rounded-md border border-black/20" title="Search">
+            <Search size={20} />
+          </button>
+        </header>
+      ) : (
+        <header className="px-6 pt-8 pb-4 flex justify-between items-start z-10">
+          <div className="flex items-center gap-3">
+            {firmName === 'Nihal Electronics' ? (
+              <img src="/nihallogo.png" alt="Nihal Logo" className="w-10 h-10 rounded-xl bg-white object-contain p-1" />
+            ) : firmName === 'Yash Electronics' ? (
+              <img src="/yashlogo.png" alt="Yash Logo" className="w-10 h-10 rounded-xl bg-white object-contain p-1" />
+            ) : (
+              <div className="p-2 bg-blue-600 rounded-xl text-white">
+                <Wrench size={20} />
+              </div>
+            )}
+            <div>
+              <h1 className="text-xl font-bold tracking-tight">{firmName || 'Repair Hub'}</h1>
+              <p className={`text-[10px] font-bold uppercase tracking-widest ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}> 
+                Shop Management
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-col gap-2 items-end">
+            <button 
+              onClick={toggleDarkMode}
+              className={`p-2 rounded-xl transition-all active:scale-90 ${isDarkMode ? 'bg-slate-800 text-yellow-400 hover:bg-slate-700' : 'bg-white text-slate-900 shadow-sm hover:bg-slate-100'}`}
+              title="Toggle dark mode"
             >
-              Logout
+              {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
             </button>
-          )}
-        </div>
-      </header>
+            {onLogout && (
+              <button
+                onClick={onLogout}
+                className={`p-2 rounded-xl transition-all active:scale-90 mt-1 ${isDarkMode ? 'bg-red-700 text-white hover:bg-red-600' : 'bg-red-100 text-red-700 hover:bg-red-200'} text-xs font-semibold`}
+                title="Logout"
+              >
+                Logout
+              </button>
+            )}
+          </div>
+        </header>
+      )}
 
       {/* Content Area */}
       <main className="flex-1 overflow-y-auto px-4 pb-24 custom-scrollbar">
@@ -83,20 +102,20 @@ export const Layout: React.FC<LayoutPropsWithFirm> = ({
       </main>
 
       {/* Bottom Navigation */}
-      <nav className={`fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md px-6 py-4 flex items-center justify-between z-20 ${isDarkMode ? 'bg-slate-900/80 backdrop-blur-lg border-t border-slate-800' : 'bg-white/80 backdrop-blur-lg border-t border-slate-200'}`}>
+      <nav className={`fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md px-6 py-4 flex items-center justify-between z-20 ${isLightMode ? 'bg-white/80 backdrop-blur-lg border-t border-slate-200' : 'bg-slate-900/80 backdrop-blur-lg border-t border-slate-800'}`}>
         <NavItem 
           icon={<LayoutGrid size={20} />} 
           label="Home" 
           active={activeTab === Tab.DASHBOARD} 
           onClick={() => onTabChange(Tab.DASHBOARD)}
-          isDark={isDarkMode}
+          isDark={!isLightMode}
         />
         <NavItem 
           icon={<ClipboardList size={20} />} 
           label="Tasks" 
           active={activeTab === Tab.WORK} 
           onClick={() => onTabChange(Tab.WORK)}
-          isDark={isDarkMode}
+          isDark={!isLightMode}
         />
 
         {/* Single Floating Action Button */}
@@ -119,14 +138,14 @@ export const Layout: React.FC<LayoutPropsWithFirm> = ({
           label="Job Board" 
           active={activeTab === Tab.STOCK} 
           onClick={() => onTabChange(Tab.STOCK)}
-          isDark={isDarkMode}
+          isDark={!isLightMode}
         />
         <NavItem 
           icon={<Package size={20} />} 
           label="Stock" 
           active={activeTab === Tab.INVENTORY} 
           onClick={() => onTabChange(Tab.INVENTORY)}
-          isDark={isDarkMode}
+          isDark={!isLightMode}
         />
       </nav>
       <ScanOrNewTagModal isOpen={modalOpen} onClose={() => setModalOpen(false)} onSelect={handleModalSelect} />
